@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas</title>
+    <style>
+        canvas {
+            background-color: Aqua;
+        }
+    </style>
+</head>
+<body>
+    <canvas height="500" width="800"></canvas>
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script>
+        $(function () {
+            var x = 50;
+            var y = 50;
+            var canvas = $('canvas').get(0);
+                var ctx = canvas.getContext('2d');
+
+                var draw = function () {
+                    canvas.width = canvas.width;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.fillStyle = 'Yellow';
+                    ctx.strokeStyle = 'Black';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 50, 0, Math.PI * 2, true); // Outer circle
+                    ctx.fill();
+                    ctx.moveTo(x + 35, y);
+                    ctx.arc(x, y, 35, 0, Math.PI, false); // Mouth
+                    ctx.moveTo(x - 10, y - 10);
+                    ctx.arc(x - 15, y - 10, 5, 0, Math.PI * 2, true); // Left eye
+                    ctx.moveTo(x + 20, y - 10);
+                    ctx.arc(x + 15, y - 10, 5, 0, Math.PI * 2, true); // Right eye
+                    ctx.closePath();
+                    ctx.stroke();
+                };
+
+
+                // shim layer with setTimeout fallback
+                // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+                window.requestAnimFrame = (function() {
+                    return window.requestAnimationFrame ||
+                        window.webkitRequestAnimationFrame ||
+                        window.mozRequestAnimationFrame ||
+                        window.oRequestAnimationFrame ||
+                        window.msRequestAnimationFrame ||
+                        function(callback) {
+                            window.setTimeout(callback, 1000 / 60);
+                        };
+                })();
+
+                $('canvas').mousemove(function(e) {
+                    x = e.clientX;
+                    y = e.clientY;
+                    requestAnimFrame(draw);
+                });
+
+                requestAnimFrame(draw);
+        });
+
+    </script>
+</body>
+</html>

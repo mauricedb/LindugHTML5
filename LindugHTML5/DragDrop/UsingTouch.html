@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Drag&Drop using touch</title>
+    <style>
+        #draggable {
+            width: 150px;
+            height: 150px;
+            padding: 0.5em;
+            background-color: #a8a8f3;
+            background-image: none;
+
+            -ms-touch-action: none;
+        }
+
+        .demo {
+            background-color: lightcyan;
+            height: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo">
+
+        <div id="draggable" class="ui-widget-content">
+            <p>Drag me around</p>
+        </div>
+
+    </div>
+    <div>
+        <p id='msg'></p>
+    </div>
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script src="/Scripts/jquery-ui-1.10.3.js"></script>
+    <script src="/Scripts/jquery.ui.touch-punch.js"></script>
+    <script>
+        $(function () {
+            $("#draggable").draggable();
+
+            $(".demo").droppable({
+                drop: function () {
+                    $('#msg').text('Dropped shape');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

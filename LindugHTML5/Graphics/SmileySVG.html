@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>SVG</title>
+
+    <style>
+        svg#main {
+            background-color: Aqua;
+            height: 500px;
+            width: 800px;
+        }
+    </style>
+</head>
+<body>
+
+    <svg id="main" xmlns="http://www.w3.org/2000/svg">
+        <svg xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            version="1.1"
+            id="smiley"
+            width="262" height="262">
+            <circle cx="131"
+                cy="131"
+                r="130"
+                style="fill: #fede58; stroke: #000; stroke-width: 2" />
+            <circle cx="85.5"
+                cy="78.5"
+                r="23"
+                id="eyeL"
+                style="fill: #fede58; stroke: #000; stroke-width: 2.5" />
+            <use
+                transform="translate(90.5,0)"
+                xlink:href="#eyeL" />
+            <path
+                d="m 47.25,175.25 c 76.345,72.709 129.964,40.578 167.5,-3.75"
+                style="fill: none; stroke: #000; stroke-width: 4" />
+        </svg>
+    </svg>
+
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script>
+        $(function () {
+            var smiley = $('#smiley').get(0);
+
+            $('#main').mousemove(function (e) {
+                if (e.target.id === 'main') {
+                    smiley.x.baseVal.value = e.clientX - 75;
+                    smiley.y.baseVal.value = e.clientY - 75;
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

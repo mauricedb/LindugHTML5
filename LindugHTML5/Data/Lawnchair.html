@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Lawnchair</title>
+</head>
+<body>
+    <p>
+        Add name:
+        <input type="text" id="newName" value="Maurice" />
+        <button id="addName">Add</button>
+    </p>
+    <ul id="people"></ul>
+
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <!--[if lt IE 8]>
+        <script src="/Scripts/json2.js"></script>
+    <![endif]-->
+    <script src="/Scripts/lawnchair-0.6.1.js"></script>
+    <script>
+        $(function () {
+            showPeople();
+            
+            $("#addName").click(function () {
+                var person = { name: $("#newName").val() };
+                Lawnchair(function (lawnchair) {
+                    lawnchair.save(person);
+                });
+
+                $("#newName").val("").focus();
+                showPeople();
+            });
+
+            function showPeople() {
+                Lawnchair(function (lawnchair) {
+                    var people = $("#people").empty();
+                    lawnchair.each(function (person) {
+                        $("<li>").text(person.name).appendTo(people);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Drop Images</title>
+</head>
+<body>
+    <div id='dropTarget' style='height: 100px; width: 100%; background-color: Lime; text-align: center'>
+        Drop files here
+    </div>
+    <ul id='images'>
+    </ul>
+
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script>
+        $(function () {
+            $('#dropTarget').bind('dragover', function (e) {
+                e.preventDefault();
+            });
+
+            $('#dropTarget').bind('drop', function (e) {
+                e.preventDefault();
+
+                if (e.originalEvent.dataTransfer.files === undefined) {
+                    // IE doesn't support file drops yet.
+                    $('#dropTarget').text('Drag & Drop of files is not supported');
+                    return;
+                }
+
+                $.each(e.originalEvent.dataTransfer.files, function () {
+                    var file = this;
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        $('<img>')
+                            .attr('title', file.name)
+                            .attr('src', this.result)
+                            .css('width', '75%')
+                            .appendTo('#images');
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

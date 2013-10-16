@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>db.js</title>
+</head>
+<body>
+    <p>
+        Add name:
+        <input type="text" id="newName" value="Maurice" />
+        <button id="addName">Add</button>
+    </p>
+    <ul id="people"></ul>
+
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script src="/Scripts/db.js"></script>
+    <script>
+        $(function () {
+            var database;
+
+            openDb().then(function (s) {
+                database = s;
+                showPeople();
+            }, function (e) {
+                alert(e.target.error.message);
+            });
+
+            function openDb() {
+                return db.open({
+                    server: 'peopleDB1',
+                    version: 2,
+                    schema: {
+                        people: {
+                            key: { keyPath: 'id', autoIncrement: true },
+                            indexes: { name: {} }
+                        }
+                    }
+                });
+            }
+
+            $("#addName").click(function () {
+                var person = { name: $("#newName").val() };
+
+                if (database) {
+                    database.people.add(person).then(function () {
+                        $("#newName").val("").focus();
+                        showPeople();
+                    });
+                }
+            });
+
+            function showPeople() {
+                var people = $("#people").empty();
+
+                if (database) {
+                    database.people.query("name").all()                        .execute()
+                        .then(function (results) {
+                            $.each(results, function () {
+                                $("<li>").text(this.name).appendTo(people);
+                            });
+                        });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

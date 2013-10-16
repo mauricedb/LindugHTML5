@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>SignalR Chat</title>
+    <style>
+        #msgs li {
+            color: blue;
+        }
+
+        #msgs .send {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <input id="msg" type="text" value="Hello" />
+    <button id="send">Send</button>
+    <ul id="msgs"></ul>
+    <!--[if lt IE 8]>
+        <script src="/Scripts/json2.js"></script>
+    <![endif]-->
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script src="/Scripts/jquery.signalR-1.1.3.js"></script>
+    <script src="/signalr/hubs"></script>
+    <script>
+        $(function () {
+            $.connection.hub.start();
+
+            var chatHub = $.connection.chatHub;
+
+            chatHub.client.broadcast = function (message) {
+                $("<li>").text("They said: " + message).prependTo("#msgs");
+            };
+
+            $("#send").click(function () {
+                var input = $("#msg");
+                var message = input.val();
+                chatHub.server.send(message);
+
+                $("<li>").text("I said: " + message).addClass("send").prependTo("#msgs");
+
+                input.val("").focus();
+            });
+
+        })
+    </script>
+</body>
+</html>

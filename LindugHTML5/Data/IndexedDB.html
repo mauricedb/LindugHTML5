@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>IndexedDB</title>
+</head>
+<body>
+    <p>
+        Add name:
+        <input type="text" id="newName" value="Maurice" />
+        <button id="addName">Add</button>
+    </p>
+    <ul id="people"></ul>
+
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script>
+        $(function () {
+            var database;
+
+            openDb();
+
+            function upgradeNeeded(e) {
+                database = e.target.result;
+                var store = database.createObjectStore("people", {
+                    keyPath: "id",
+                    autoIncrement: true
+                });
+                store.createIndex('name', 'name', { unique: false });
+            }
+            
+            function openDb() {
+                var request = window.indexedDB.open("peopleDB2", 1);
+                request.onsuccess = function (e) {
+                    database = e.target.result;
+                    showPeople();
+                };
+                request.onupgradeneeded = upgradeNeeded;
+                request.onerror = standardError;
+            }
+
+            $("#addName").click(function () {
+                var person = { name: $("#newName").val() };
+
+                if (database) {
+                    var transaction = database.transaction(["people"], "readwrite");
+                    var objectStore = transaction.objectStore("people");
+                    var request = objectStore.add(person);
+                    
+                    request.onsuccess = function () {
+                        $("#newName").val("").focus();
+                        setTimeout(showPeople, 0);
+                    };
+                    request.onerror = standardError;
+                }
+            });
+
+            function showPeople() {
+                var people = $("#people").empty();
+
+                if (database) {
+                    var transaction = database.transaction(["people"], "readonly");
+                    var objectStore = transaction.objectStore("people");
+                    var index = objectStore.index("name");
+                    var cursor = index.openCursor();
+                    
+                    cursor.onsuccess = function () {
+                        if (cursor.result) {
+                            var person = cursor.result.value;
+                            $("<li>").text(person.name).appendTo(people);
+                            
+                            cursor.result.continue();
+                        }
+                    };
+                    cursor.onerror = standardError;
+                }
+            }
+
+            function standardError(e) {
+                alert(e.target.error.message);
+            }
+        });
+    </script>
+</body>
+</html>

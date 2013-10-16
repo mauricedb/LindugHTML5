@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Chat</title>
+    <style>
+        #msgs li {
+            color: blue;
+        }
+
+        #msgs .send {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <input id="msg" type="text" value="Hello" />
+    <button id="send">Send</button>
+    <ul id="msgs"></ul>
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script>
+        $(function () {
+            function S4() {
+                return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+            }
+            function guid() {
+                return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+            }
+
+            var id = guid();
+            var ws = new WebSocket('ws://' + location.host + '/WebSockets/WSHttpHandler.ashx');
+
+            ws.onmessage = function (e) {
+                var message = JSON.parse(e.data);
+                if (message.id !== id) {
+                    $("<li>").text("They said: " + message.text).prependTo("#msgs");
+                }
+            };
+
+            ws.onerror = function (e) {
+                alert("Oops, unable to connect WebSocket");
+            };
+
+            $("#send").click(function () {
+                var input = $("#msg");
+                var message = {
+                    id: id,
+                    text: input.val()
+                };
+
+                ws.send(JSON.stringify(message));
+
+                $("<li>").text("I said: " + message.text).addClass("send").prependTo("#msgs");
+
+                input.val("").focus();
+            });
+        })
+    </script>
+</body>
+</html>

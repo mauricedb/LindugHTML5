@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>LocalStorage</title>
+</head>
+<body>
+    <p>
+        Welcome back <span id="name"></span>. You have visited this page <span id="hitCount">0</span> times
+    </p>
+    <p>
+        Change name:
+        <input type="text" id="newName" />
+        <button id="updateName">Update</button>
+    </p>
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script>
+        $(function () {
+            var hitCount = localStorage.hitCount || 0;
+            hitCount++;
+            localStorage.hitCount = hitCount;
+
+            $("#hitCount").text(hitCount);
+            $("#name").text(localStorage.userName || "stranger");
+
+            $("#updateName").click(function () {
+                localStorage.userName = $("#newName").val();
+            });
+        });
+    </script>
+</body>
+</html>
